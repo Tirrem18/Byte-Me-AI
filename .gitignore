@@ -1,0 +1,63 @@
+# =============================
+# 🚫 Python
+# =============================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# =============================
+# 🚫 Environment files
+# =============================
+.env
+
+# =============================
+# 🚫 VSCode settings (optional, personal editor settings)
+# =============================
+.vscode/
+
+# =============================
+# 🚫 Data folders — Keep folders, ignore contents
+# =============================
+
+# Ignore all files in Data/Data-Sets/
+Data/Data-Sets/*
+
+# Ignore all files in Data/Prompts/
+Data/Prompts/*
+
+# Allow .gitkeep so empty folders stay tracked
+!Data/Data-Sets/.gitkeep
+!Data/Prompts/.gitkeep
+
+# =============================
+# 🚫 Logs / Temp / OS Specific
+# =============================
+*.log
+.DS_Store
+Thumbs.db
+
+# =============================
+# 🚫 Virtual environments
+# =============================
+.venv/
+env/
+venv/
+
+# =============================
+# 🚫 Jupyter Notebook Checkpoints (if you ever add notebooks)
+# =============================
+.ipynb_checkpoints/
+
+# =============================
+# 🚫 Others (Optional, if you use build tools)
+# =============================
+build/
+dist/
+*.egg-info/
+
+# =============================
+# 🚫 ByteMeAI specific: Ignore generated or sensitive files
+# =============================
+# (e.g., cache folders if you ever have for models or responses later)
+cache/
