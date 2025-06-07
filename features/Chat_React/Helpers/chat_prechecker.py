@@ -6,11 +6,11 @@ def load_phrases(file_path):
         return json.load(f)
 
 # Load all phrases
-GREETING_PHRASES = load_phrases('data/data_sets/phrases/greetings.json')
-OPINION_PHRASES = load_phrases('data/data_sets/phrases/insults.json')
-INSULT_PHRASES = load_phrases('data/data_sets/phrases/opinions.json')
-STREAM_PHRASES = load_phrases('data/data_sets/phrases/questions.json')
-QUESTION_PHRASES = load_phrases('data/data_sets/phrases/streams.json')
+GREETING_PHRASES = load_phrases('data/data_sets/phrases/greetings.json')["greetings"]
+OPINION_PHRASES = load_phrases('data/data_sets/phrases/opinions.json')["opinions"]
+INSULT_PHRASES = load_phrases('data/data_sets/phrases/insults.json')["insults"]
+QUESTION_PHRASES = load_phrases('data/data_sets/phrases/questions.json')["questions"]
+STREAM_PHRASES = load_phrases('data/data_sets/phrases/streams.json')["streams"]
 
 def normalize_text(text):
     text = text.lower()

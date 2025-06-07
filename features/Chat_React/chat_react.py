@@ -11,8 +11,8 @@ def run(model, test_mode=False):
         print("[Chat-React] Running in test mode...")
 
         # Load the prompt templates
-        base_template_path = "Data/Templates/base_prompt_template.txt"
-        style_instructions_path = "Data/Templates/style_instructions.json"
+        base_template_path = "data/prompts/base_prompt_template.txt"
+        style_instructions_path = "data/prompts/style_instructions.json"
 
         print(f"📄 Loading base template from: {base_template_path}")
         base_template = load_base_template(base_template_path)
