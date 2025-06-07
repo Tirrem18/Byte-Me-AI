@@ -21,10 +21,10 @@ __pycache__/
 # =============================
 
 # Ignore all files in Data/Data-Sets/
-Data/Data-Sets/*
+data/data_sets/*
 
 # Ignore all files in Data/Prompts/
-Data/Prompts/*
+data/prompts/*
 
 # Allow .gitkeep so empty folders stay tracked
 !Data/Data-Sets/.gitkeep
