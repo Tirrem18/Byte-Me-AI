@@ -10,8 +10,8 @@ def load_model():
 
     model = AutoModelForCausalLM.from_pretrained(
         model_path,
-        model_type="mistral",     # <- Tells it this is a Mistral model
-        gpu_layers=9999           # <- Fit nicely in your RTX 2060 (adjust if needed)
+        model_type="mistral",
+        gpu_layers=9999          
     )
 
     print("✅ Model Loaded Successfully")
