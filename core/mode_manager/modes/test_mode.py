@@ -1,5 +1,5 @@
-from modules.chat_reacts import chat_react
-from modules.story_time import story_time
+from modules.chat_reacts.chat_reacts import chat_react
+from modules.story_time.story_time import story_time
 
 def run_test_mode(model):
     feature_funcs = {
