@@ -10,12 +10,22 @@ def run_test_mode(model):
             print("Not found")
             continue
 
-        # Collect params dynamically
-        params_needed = FEATURES[choice]["params"]
+        param_defs = FEATURES[choice]["params"]
         inputs = []
-        for param in params_needed:
-            value = input(f"{param.capitalize()}: ")
+        for param in param_defs:
+            # Optional param handling
+            if param.get("optional", False):
+                do_custom = input(f"Custom {param['name']}? (y/n): ").strip().lower()
+                if do_custom == "y":
+                    value = input(f"{param['custom_prompt']}: ")
+                    if value == "":
+                        value = None
+                else:
+                    value = None
+            else:  # Required, always prompt
+                value = input(f"{param['custom_prompt']}: ")
+                if value == "":
+                    print(f"{param['name']} is required!")
+                    value = input(f"{param['custom_prompt']}: ")
             inputs.append(value)
-
-        # Always pass model as the first argument, then params, then test_mode
         FEATURES[choice]["func"](model, *inputs, test_mode=True)
