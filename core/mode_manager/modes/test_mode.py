@@ -9,7 +9,13 @@ def run_test_mode(model):
         if choice not in FEATURES:
             print("Not found")
             continue
-        # Here you prompt for username/chat, then:
-        username = input("Username: ")
-        chat = input("Chat: ")
-        FEATURES[choice](model, username, chat, test_mode=True)
+
+        # Collect params dynamically
+        params_needed = FEATURES[choice]["params"]
+        inputs = []
+        for param in params_needed:
+            value = input(f"{param.capitalize()}: ")
+            inputs.append(value)
+
+        # Always pass model as the first argument, then params, then test_mode
+        FEATURES[choice]["func"](model, *inputs, test_mode=True)
