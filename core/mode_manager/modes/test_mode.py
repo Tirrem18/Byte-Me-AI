@@ -1,25 +1,15 @@
-from modules.chat_reacts.chat_reacts import chat_react_run
-from modules.story_time.story_time import story_time_run
+from modules.feature_list import FEATURES
 
 def run_test_mode(model):
-    feature_funcs = {
-        "chat-react": chat_react.run,
-        "story-time": story_time.run,
-    }
-
-    print("\n🧪 Entering Test Mode.")
     while True:
-        print("\n🎮 Available Features:")
-        for name in feature_funcs:
-            print(f" - {name}")
-
-        choice = input("Enter a feature name (or 'exit'): ").strip().lower()
+        print("Available features:", list(FEATURES.keys()))
+        choice = input("Enter feature name (or 'exit'): ").strip().lower()
         if choice == "exit":
-            print("👋 Exiting Test Mode.")
             break
-        elif choice not in feature_funcs:
-            print(f"[ERROR] '{choice}' not found.")
+        if choice not in FEATURES:
+            print("Not found")
             continue
-
-        print(f"\n▶ Running: {choice}")
-        feature_funcs[choice](model, test_mode=True)
+        # Here you prompt for username/chat, then:
+        username = input("Username: ")
+        chat = input("Chat: ")
+        FEATURES[choice](model, username, chat, test_mode=True)
