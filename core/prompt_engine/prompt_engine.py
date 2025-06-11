@@ -6,45 +6,64 @@ class PromptEngine:
         self.base_prompt_dir = base_prompt_dir
 
     def load_persona(self):
-        # Load the universal persona prompt
         persona_path = os.path.join(self.base_prompt_dir, "persona.txt")
-        with open(persona_path, "r", encoding="utf-8") as f:
-            return f.read().strip()
-
-    def load_feature_prompt(self, feature_name):
-        # Try to load feature-specific prompt (supports .json or .txt)
-        feature_dir = os.path.join(self.base_prompt_dir, feature_name)
-        for filename in ["persona.txt", "tailored_response.json", "prompt.txt"]:
-            file_path = os.path.join(feature_dir, filename)
-            if os.path.exists(file_path):
-                if filename.endswith(".json"):
-                    with open(file_path, "r", encoding="utf-8") as f:
-                        return json.load(f)  # Might be dict
-                else:
-                    with open(file_path, "r", encoding="utf-8") as f:
-                        return f.read().strip()
+        if os.path.exists(persona_path):
+            with open(persona_path, "r", encoding="utf-8") as f:
+                return f.read().strip()
         return ""
 
-    def load_style_instructions(self, feature_name, style=None):
-        # Optionally load style/extra instructions
-        style_file = os.path.join(self.base_prompt_dir, feature_name, "styles.json")
-        if style and os.path.exists(style_file):
-            with open(style_file, "r", encoding="utf-8") as f:
-                styles = json.load(f)
-                return styles.get(style, "")
+    def load_generic(self, feature):
+        feature_dir = os.path.join(self.base_prompt_dir, feature)
+        generic_path = os.path.join(feature_dir, "generic.txt")
+        if os.path.exists(generic_path):
+            with open(generic_path, "r", encoding="utf-8") as f:
+                return f.read().strip()
         return ""
 
-    def build_prompt(self, feature_name, style=None):
-        # Compose the full prompt in order: persona > feature > style
-        parts = [
-            self.load_persona(),
-            self.load_feature_prompt(feature_name),
-            self.load_style_instructions(feature_name, style)
-        ]
-        # If any part is a dict (from JSON), flatten to string as needed:
-        return "\n\n".join([p if isinstance(p, str) else json.dumps(p, indent=2) for p in parts if p])
+    def load_detailed(self, feature):
+        feature_dir = os.path.join(self.base_prompt_dir, feature)
+        detailed_json = os.path.join(feature_dir, "detailed.json")
+        detailed_txt = os.path.join(feature_dir, "detailed.txt")
+        if os.path.exists(detailed_json):
+            with open(detailed_json, "r", encoding="utf-8") as f:
+                return json.load(f)
+        elif os.path.exists(detailed_txt):
+            with open(detailed_txt, "r", encoding="utf-8") as f:
+                return f.read().strip()
+        return None
 
-# Usage:
-# engine = PromptEngine()
-# prompt = engine.build_prompt("chat-response", style="insult")
-# print(prompt)
+    def get_prompt(self, feature, context=None, **kwargs):
+        """
+        Builds a full prompt for a given feature.
+        - For .json detailed files: uses context as key
+        - For .txt detailed files: fills in kwargs if provided
+        """
+        persona = self.load_persona()
+        generic = self.load_generic(feature)
+        detailed = self.load_detailed(feature)
+
+        detailed_part = ""
+        # If it's a dict (json): use context as a key, fallback to "Other"
+        if isinstance(detailed, dict):
+            detailed_part = detailed.get(context, detailed.get("Other", ""))
+            # Support for parameterized instructions (optional, advanced)
+            if kwargs and "{" in detailed_part:
+                try:
+                    detailed_part = detailed_part.format(**kwargs)
+                except KeyError:
+                    pass  # If missing kwarg, leave blank as is
+        # If it's a string (txt): fill in kwargs if present
+        elif isinstance(detailed, str):
+            if kwargs and "{" in detailed:
+                try:
+                    detailed_part = detailed.format(**kwargs)
+                except KeyError:
+                    detailed_part = detailed  # If not all blanks filled, return template
+            else:
+                detailed_part = detailed
+
+        # Compose the final prompt (remove empty parts)
+        prompt_parts = [persona, generic, detailed_part]
+        return "\n\n".join([part for part in prompt_parts if part])
+
+# --- End of PromptEngine ---
